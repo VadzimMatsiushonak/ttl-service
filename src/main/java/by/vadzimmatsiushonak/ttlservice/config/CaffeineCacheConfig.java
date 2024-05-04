@@ -1,5 +1,9 @@
 package by.vadzimmatsiushonak.ttlservice.config;
 
+import static by.vadzimmatsiushonak.ttlservice.config.CacheConst.CACHE_MAX_SIZE;
+import static by.vadzimmatsiushonak.ttlservice.config.CacheConst.CACHE_TTL_SECONDS;
+import static by.vadzimmatsiushonak.ttlservice.config.CacheConst.DEFAULT_CACHE_NAME;
+
 import by.vadzimmatsiushonak.ttlservice.listener.CaffeineEvictionListener;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.Scheduler;
@@ -8,23 +12,21 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 @Configuration
-@EnableCaching
 @Slf4j
 @RequiredArgsConstructor
-public class CacheConfig {
+@Profile(CaffeineCacheConfig.CAFFEINE_CACHE)
+public class CaffeineCacheConfig {
 
-    public final static String DEFAULT_CACHE_NAME = "default";
-    public final static Long CACHE_TTL_SECONDS = 30L;
-    public final static Integer CACHE_MAX_SIZE = 100;
+    public static final String CAFFEINE_CACHE = "caffeine";
 
     @Bean
-    public Caffeine caffeineConfig(CaffeineEvictionListener evictionListener) {
+    public Caffeine<Object, Object> caffeineConfig(CaffeineEvictionListener evictionListener) {
         return Caffeine
             .newBuilder()
             .expireAfterWrite(CACHE_TTL_SECONDS, TimeUnit.SECONDS)
@@ -34,7 +36,7 @@ public class CacheConfig {
     }
 
     @Bean
-    public CacheManager cacheManager(Caffeine caffeine) {
+    public CacheManager cacheManager(Caffeine<Object, Object> caffeine) {
         CaffeineCacheManager cacheManager = new CaffeineCacheManager(DEFAULT_CACHE_NAME);
         cacheManager.setCaffeine(caffeine);
         cacheManager.setAllowNullValues(false);
