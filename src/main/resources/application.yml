@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: ttl-service
+  profiles:
+#    active: caffeine
+    active: redis
