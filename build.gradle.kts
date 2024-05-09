@@ -26,6 +26,10 @@ dependencies {
     implementation("com.github.ben-manes.caffeine:caffeine")
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
     implementation("io.lettuce:lettuce-core")
+    implementation("org.springframework.kafka:spring-kafka")
+    implementation("com.fasterxml.jackson.core:jackson-core") // Added because there is no compileClasspath for this library
+    implementation("com.fasterxml.jackson.core:jackson-annotations") // Added because there is no compileClasspath for this library
+    implementation("com.fasterxml.jackson.core:jackson-databind") // Added because there is no compileClasspath for this library
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     compileOnly("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
