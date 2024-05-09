@@ -2,5 +2,8 @@ spring:
   application:
     name: ttl-service
   profiles:
-#    active: caffeine
-    active: redis
+    active: redis #caffeine
+  kafka:
+    bootstrap-address: PLAINTEXT://localhost:9092
+    group-id: ttl_consumer_group
+    topic: ttl_events
