@@ -198,3 +198,21 @@ public void updateCache() {
 
 > NOTE: The TTL eviction handler will not work in this case because it is onlyconfigured for the CacheManager.
 > Therefore, TTL will not work properly.
+
+## Docker
+
+### Redis
+
+Standalone Redis instance:
+
+```
+docker-compose -f docker/redis-compose.yml up -d
+```
+
+### Kafka
+
+Standalone Kafka instance with Zookeeper:
+
+```
+docker-compose -f docker/redis-compose.yml up -d
+```
