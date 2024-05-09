@@ -20,12 +20,13 @@ public class ApplicationListener {
 
     @EventListener(ApplicationReadyEvent.class)
     public void startup() throws InterruptedException {
+        SECONDS.sleep(1L);
         log.info("Application started");
         defaultCache.put("key", "value");
         log.info("put 'key':'value' in defaultCache");
         ValueWrapper value = defaultCache.get("key");
         log.info("Get 'key':{}", value);
-        SECONDS.sleep(5L);
+        SECONDS.sleep(6L);
         value = defaultCache.get("key");
         log.info("Get 'key':{}", value);
     }
