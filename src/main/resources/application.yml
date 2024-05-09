@@ -7,3 +7,7 @@ spring:
     bootstrap-address: PLAINTEXT://localhost:9092
     group-id: ttl_consumer_group
     topic: ttl_events
+  cache:
+    default-name: default
+    ttl-seconds: 5
+    max-size: 100

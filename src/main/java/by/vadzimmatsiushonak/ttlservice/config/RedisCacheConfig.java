@@ -1,8 +1,6 @@
 package by.vadzimmatsiushonak.ttlservice.config;
 
-import static by.vadzimmatsiushonak.ttlservice.config.CacheConst.CACHE_TTL_SECONDS;
-import static by.vadzimmatsiushonak.ttlservice.config.CacheConst.DEFAULT_CACHE_NAME;
-
+import by.vadzimmatsiushonak.ttlservice.properties.CacheProperties;
 import java.time.Duration;
 import java.util.Collections;
 import lombok.RequiredArgsConstructor;
@@ -36,10 +34,12 @@ public class RedisCacheConfig {
 
     public static final String REDIS_CACHE = "redis";
 
+    private final CacheProperties cacheProperties;
+
     @Bean
     public CacheManager cacheManager(RedisConnectionFactory connectionFactory) {
         RedisCacheConfiguration configuration = RedisCacheConfiguration.defaultCacheConfig()
-            .entryTtl(Duration.ofSeconds(CACHE_TTL_SECONDS))
+            .entryTtl(Duration.ofSeconds(cacheProperties.getTtlSeconds()))
             .disableCachingNullValues()
             .serializeValuesWith(
                 RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
@@ -47,7 +47,7 @@ public class RedisCacheConfig {
         return RedisCacheManager.builder(connectionFactory)
             .cacheDefaults(RedisCacheConfiguration.defaultCacheConfig())
             .transactionAware()
-            .withInitialCacheConfigurations(Collections.singletonMap(DEFAULT_CACHE_NAME,
+            .withInitialCacheConfigurations(Collections.singletonMap(cacheProperties.getDefaultName(),
                 configuration))
             .build();
     }
@@ -55,7 +55,7 @@ public class RedisCacheConfig {
 
     @Bean
     public Cache defaultCache(CacheManager cacheManager) {
-        return cacheManager.getCache(DEFAULT_CACHE_NAME);
+        return cacheManager.getCache(cacheProperties.getDefaultName());
     }
 
     @Bean

@@ -1,10 +1,7 @@
 package by.vadzimmatsiushonak.ttlservice.config;
 
-import static by.vadzimmatsiushonak.ttlservice.config.CacheConst.CACHE_MAX_SIZE;
-import static by.vadzimmatsiushonak.ttlservice.config.CacheConst.CACHE_TTL_SECONDS;
-import static by.vadzimmatsiushonak.ttlservice.config.CacheConst.DEFAULT_CACHE_NAME;
-
 import by.vadzimmatsiushonak.ttlservice.listener.CaffeineEvictionListener;
+import by.vadzimmatsiushonak.ttlservice.properties.CacheProperties;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.Scheduler;
 import java.util.concurrent.TimeUnit;
@@ -25,19 +22,21 @@ public class CaffeineCacheConfig {
 
     public static final String CAFFEINE_CACHE = "caffeine";
 
+    private final CacheProperties cacheProperties;
+
     @Bean
     public Caffeine<Object, Object> caffeineConfig(CaffeineEvictionListener evictionListener) {
         return Caffeine
             .newBuilder()
-            .expireAfterWrite(CACHE_TTL_SECONDS, TimeUnit.SECONDS)
+            .expireAfterWrite(cacheProperties.getTtlSeconds(), TimeUnit.SECONDS)
             .scheduler(Scheduler.systemScheduler()) // Enabled to allow cache 'refreshing' / 'check 'each ~1 second
             .evictionListener(evictionListener)
-            .maximumSize(CACHE_MAX_SIZE);
+            .maximumSize(cacheProperties.getMaxSize());
     }
 
     @Bean
     public CacheManager cacheManager(Caffeine<Object, Object> caffeine) {
-        CaffeineCacheManager cacheManager = new CaffeineCacheManager(DEFAULT_CACHE_NAME);
+        CaffeineCacheManager cacheManager = new CaffeineCacheManager(cacheProperties.getDefaultName());
         cacheManager.setCaffeine(caffeine);
         cacheManager.setAllowNullValues(false);
         return cacheManager;
@@ -45,7 +44,7 @@ public class CaffeineCacheConfig {
 
     @Bean
     public Cache defaultCache(CacheManager cacheManager) {
-        return cacheManager.getCache(DEFAULT_CACHE_NAME);
+        return cacheManager.getCache(cacheProperties.getDefaultName());
     }
 
 
