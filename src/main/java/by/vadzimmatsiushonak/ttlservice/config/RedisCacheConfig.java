@@ -11,13 +11,11 @@ import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.context.event.EventListener;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
-import org.springframework.data.redis.core.RedisKeyExpiredEvent;
 import org.springframework.data.redis.core.RedisKeyValueAdapter.EnableKeyspaceEvents;
 import org.springframework.data.redis.core.RedisKeyValueAdapter.ShadowCopy;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -70,13 +68,5 @@ public class RedisCacheConfig {
         template.setConnectionFactory(connectionFactory);
         return template;
     }
-
-    @EventListener
-    public void handleRedisStringKeyExpiredEvent(RedisKeyExpiredEvent<String> event) {
-        // Redis not providing us with expired event value
-        // Maybe we need to use shadow_copy or something like this
-        log.info("key '{}', value '{}', cause '{}", new String(event.getId()), event.getValue(), event);
-    }
-
 
 }
